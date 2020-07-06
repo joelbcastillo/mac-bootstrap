@@ -76,93 +76,158 @@ fi
 laptop_echo "Updating Homebrew formulae ..."
 brew update --force # https://github.com/Homebrew/brew/issues/1151
 brew bundle --file=- <<EOF
-tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
-tap "homebrew/core"
-tap "homebrew/services"
-tap "puma/puma"
-tap "universal-ctags/universal-ctags"
+# Taps
+tap 'github/gh' if OS.mac?
+tap 'homebrew/cask-versions' if OS.mac?
+tap 'homebrew/cask' if OS.mac?
+tap 'homebrew/cask-fonts' if OS.mac?
 
-# Need to install openssl before libyaml
-brew "openssl"
-brew "openssl@1.1" # wget dependency
+# Dupes
+brew 'coreutils'
+brew 'curl'
+brew 'diffutils'
+brew 'findutils'
+brew 'gawk'
+brew 'gnu-sed'
+brew 'gnu-which'
+brew 'grep'
+brew 'make'
+brew 'rsync'
+brew 'wget'
 
-brew "advancecomp"
-brew "ansible"
-brew "asciidoctor"
-brew "autoconf" # asdf dependency
-brew "automake" # asdf dependency
-brew "awscli"
-brew "bash"
-brew "bash-completion"
-brew "bat"
-brew "cloc"
-brew "cmake"
-brew "coreutils"
-brew "diff-so-fancy"
-brew "dos2unix"
-brew "exa"
-brew "fish"
-brew "fontforge"
-brew "fzf"
-brew "gifsicle"
-brew "git"
-brew "git-quick-stats"
-brew "gmp" # Vim dependency
-brew "gnupg" # asdf-nodejs dependency
-brew "highlight"
-brew "htop"
-brew "httpie"
-brew "imagemagick"
-brew "jhead"
-brew "jq"
-brew "less"
-brew "libtermkey"
-brew "libtool" # asdf dependency
-brew "libxslt" # asdf dependency
-brew "libyaml" # asdf dependency
-brew "media-info"
-brew "memcached"
-brew "mono"
-brew "most"
-brew "multitail"
-brew "neovim", args: ["HEAD"]
-brew "onefetch"
-brew "overmind"
-brew "pandoc"
-brew "perl"
-brew "pgcli"
-brew "postgresql", restart_service: true
-brew "puma/puma/puma-dev"
-brew "python"
-brew "ranger", link: false
-brew "readline"
-brew "ripgrep"
-brew "rlwrap"
-brew "rsync"
-brew "shellcheck"
-brew "sqlite"
-brew "ssh-copy-id"
-brew "starship"
-brew "the_silver_searcher"
-brew "tldr"
-brew "tmux"
-brew "trash"
-brew "tree"
-brew "universal-ctags/universal-ctags/universal-ctags", args: ["HEAD"]
-brew "unixodbc" # asdf dependency
-brew "w3m"
-brew "wget"
-brew "xz"
-brew "zsh"
+# Development
+brew 'travis'
+brew 'wakatime-cli'
 
-# homebrew-cask
-# https://github.com/caskroom/homebrew-cask
-cask "font-firacode-nerd-font"
-cask "alacritty"
-cask "iterm2-beta"
+# Utilities
+brew 'bat'
+brew 'exa'
+brew 'fasd'
+brew 'fd'
+brew 'fselect'
+brew 'fzf'
+brew 'gopass'
+brew 'htop'
+brew 'hyperfine'
+brew 'reattach-to-user-namespace'
+brew 'rename'
+brew 'ripgrep'
+brew 'sd'
+brew 'speedtest-cli'
+brew 'tmux'
+brew 'tokei'
+brew 'watchexec'
+
+# macOS Utilities
+brew 'mas' if OS.mac?
+brew 'osxutils' if OS.mac?
+brew 'pinentry-mac' if OS.mac?
+brew 'trash' if OS.mac?
+
+# Information Utilities
+brew 'howdoi'
+brew 'tldr'
+brew 'wtf'
+
+# Shells
+brew 'bash'
+brew 'fish'
+brew 'zsh'
+brew 'antibody'
+brew 'starship'
+
+# Programming Languages
+brew 'python'
+
+# Utilities
+brew 'direnv'
+brew 'gnupg'
+brew 'openssh'
+
+# Git
+brew 'git'
+brew 'git-lfs'
+brew 'git-secret'
+brew 'gh'
+brew 'ghi'
+brew 'ghq'
+brew 'hub'
+brew 'lazygit'
+brew 'pre-commit'
+
+# Programming Tools
+brew 'asdf'
+brew 'bats-core'
+brew 'shellcheck'
+
+# Python Tools
+# brew 'black'
+# brew 'flake8'
+# brew 'mkdocs'
+# brew 'pipenv'
+
+# IDEs & Editors
+cask 'jetbrains-toolbox'
+cask 'visual-studio-code'
+
+# Virtualization
+cask 'virtualbox'
+cask 'virtualbox-extension-pack'
+cask 'vmware-fusion'
+
+# Images
+brew 'imagemagick'
+brew 'jpeg'
+brew 'libtiff'
+brew 'webp'
+
+# Casks
+cask '1password'
+cask '1password-cli'
+cask 'adoptopenjdk'
+cask 'aerial'
+cask 'alfred'
+cask 'cheatsheet'
+cask 'dash'
+cask 'discord'
+cask 'docker'
+cask 'dropbox'
+cask 'font-fira-code'
+cask 'font-fira-code-nerd-font'
+cask 'font-jetbrains-mono'
+cask 'font-jetbrainsmono-nerd-font'
+cask 'firefox'
+cask 'firefox-developer-edition'
+cask 'google-chrome'
+cask 'iterm2'
+cask 'mactex'
+cask 'microsoft-office-2016'
+cask 'microsoft-teams'
+cask 'postgres'
+cask 'setapp'
+cask 'slack'
+cask 'spotify'
+cask 'transmit'
+cask 'whatsapp'
+cask 'wireshark'
+cask 'yt-music'
+cask 'zoomus'
+
+# Mac App Store
+mas 'Core Tunnel', id: 1354318707
+mas 'Friendly Streaming', id: 553245401
+mas 'GarageBand', id: 682658836
+mas 'iMovie', id: 408981434
+mas 'Jira', id: 1475897096
+mas 'Keynote', id: 409183694
+mas 'Meeter', id: 1510445899
+mas 'Messenger', id: 1480068668
+mas 'Numbers', id: 409203825
+mas 'Pages', id: 409201541
+mas 'Reeder', id: 880001334
+mas 'Tailscale', id: 1475387142
+mas 'The Unarchiver', id: 425424353
+
 EOF
 
 case "$DEFAULT_SHELL" in
@@ -201,6 +266,7 @@ install_asdf_plugin() {
 source "${HOME}/.asdf/asdf.sh"
 install_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
 install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
+install_asdf_plugin "python" "https://github.com/asdf-vm/asdf-python.git"
 
 install_asdf_language() {
   local language="$1"
@@ -237,28 +303,9 @@ node -v
 echo "NPM --> $(command -v npm)"
 npm -v
 
-laptop_echo "Installing default npm packages..."
-npm install -g @vue/cli
-npm install -g gulp-cli
-npm install -g http-server
-npm install -g neovim
-npm install -g pug
-npm install -g stylelint
-npm install -g typescript
-npm install -g vue-language-server
-
-laptop_echo "Installing Python support for Neovim..."
-echo "Python 3 --> $(command -v python3)"
-python3 --version
-echo "Python 2 --> $(command -v python)"
-python --version
-sudo easy_install pip
-python3 -m pip install --user --upgrade pynvim
-python2 -m pip install --user --upgrade pynvim
-
-if [ ! -d "${HOME}/.yarn" ]; then
-  laptop_echo "Installing Yarn..."
-  curl -o- -L https://yarnpkg.com/install.sh | bash
-fi
+laptop_echo "Installing Python..."
+install_asdf_language "python" "$ASDF_PYTHON_VERSION"
+echo "Python --> $(command -v node)"
+python -V
 
 laptop_echo "Laptop installation completed successfully!"

@@ -26,9 +26,9 @@ osname=$(uname)
 export COMMANDLINE_TOOLS="/Library/Developer/CommandLineTools"
 export OLD_DOTFILES_BAK="${HOME}/old_dotfiles_bak"
 export DICTIONARY_DIR="${HOME}/Library/Spelling"
-export DOTFILES_REPO_URL="https://github.com/joshukraine/dotfiles.git"
+export DOTFILES_REPO_URL="https://github.com/joelbcastillo/dotfiles.git"
 export DOTFILES_DIR="${HOME}/dotfiles"
-export BOOTSTRAP_REPO_URL="https://github.com/joshukraine/mac-bootstrap.git"
+export BOOTSTRAP_REPO_URL="https://github.com/joelbcastillo/mac-bootstrap.git"
 export BOOTSTRAP_DIR="${HOME}/mac-bootstrap"
 
 PS3="> "
@@ -46,9 +46,11 @@ fi
 
 DEFAULT_BOOTSTRAP_VERSION="v5.1.4"
 DEFAULT_DOTFILES_BRANCH="master"
-DEFAULT_TIME_ZONE="Europe/Kiev"
+DEFAULT_DOTFILES_PROFILE="macos"
+DEFAULT_TIME_ZONE="US/Eastern"
 DEFAULT_NODEJS_VERSION="12.18.0"
 DEFAULT_RUBY_VERSION="2.7.1"
+DEFAULT_PYTHON_VERSION="3.8.3"
 
 
 ################################################################################
@@ -57,7 +59,7 @@ DEFAULT_RUBY_VERSION="2.7.1"
 
 if [ "$osname" == "Linux" ]; then
   bootstrap_echo "Oops, looks like you're on a Linux machine. Please have a look at
-  my Linux Bootstrap script: https://github.com/joshukraine/linux-bootstrap"
+  my Linux Bootstrap script: https://github.com/joelbcastillo/linux-bootstrap"
   exit 1
 elif [ "$osname" != "Darwin" ]; then
   bootstrap_echo "Oops, it looks like you're using a non-UNIX system. This script
@@ -100,7 +102,7 @@ echo "*************************************************************************"
 echo "*******                                                           *******"
 echo "*******                 Welcome to Mac Bootstrap!                 *******"
 echo "*******                                                           *******"
-echo "*******                   https://jsua.co/macos                   *******"
+echo "*******                   https://jbc.dev/macos                   *******"
 echo "*******                                                           *******"
 echo "*************************************************************************"
 echo
@@ -125,6 +127,13 @@ if [ -n "$DOTFILES_BRANCH" ]; then
   export DOTFILES_BRANCH
 else
   export DOTFILES_BRANCH="$DEFAULT_DOTFILES_BRANCH"
+fi
+printf "\\nWhich profile should we install? (Leave blank for default: %S)\\n" "$DEFAULT_DOTFILES_PROFILE"
+read -r -p "> " DOTFILES_PROFILE
+if [ -n "$DOTFILES_PROFILE" ]; then
+  export DOTFILES_PROFILE
+else
+  export DOTFILES_PROFILE="$DEFAULT_DOTFILE_PROFILE"
 fi
 
 printf "\\nEnter a name for your Mac. (Leave blank for default: %s)\\n" "$DEFAULT_COMPUTER_NAME"
@@ -213,41 +222,11 @@ sh "${BOOTSTRAP_DIR}/install/laptop" 2>&1 | tee ~/laptop.log
 
 bootstrap_echo "Done!"
 
-
 ################################################################################
-# 2. Install Oh My Zsh
-################################################################################
-
-if [ "$DEFAULT_SHELL" == "zsh" ]; then
-  bootstrap_echo "Step 2: Installing Oh My Zsh..."
-
-  if [ -d "${HOME}/.oh-my-zsh" ]; then
-    rm -rf "${HOME}/.oh-my-zsh"
-  fi
-
-  git clone https://github.com/robbyrussell/oh-my-zsh.git "${HOME}/.oh-my-zsh"
-
-  if [ -d /usr/local/share/zsh ]; then
-    bootstrap_echo "Setting permissions for /usr/local/share/zsh..."
-    sudo chmod -R 755 /usr/local/share/zsh
-  fi
-
-  if [ -d /usr/local/share/zsh/site-functions ]; then
-    bootstrap_echo "Setting permissions for /usr/local/share/zsh/site-functions..."
-    sudo chmod -R 755 /usr/local/share/zsh/site-functions
-  fi
-
-  bootstrap_echo "Done!"
-else
-  bootstrap_echo "Step 2: Zsh not selected. Skipping Oh My Zsh installation."
-fi
-
-
-################################################################################
-# 3. Set macOS preferences
+# 2. Set macOS preferences
 ################################################################################
 
-bootstrap_echo "Step 3: Setting macOS preferences..."
+bootstrap_echo "Step 2: Setting macOS preferences..."
 
 # shellcheck source=/dev/null
 source "${BOOTSTRAP_DIR}/install/macos-defaults"
@@ -255,10 +234,10 @@ source "${BOOTSTRAP_DIR}/install/macos-defaults"
 bootstrap_echo "Done!"
 
 ################################################################################
-# 4. Install ~/bin utilities
+# 3. Install ~/bin utilities
 ################################################################################
 
-bootstrap_echo "Step 4: Installing ~/bin utilities..."
+bootstrap_echo "Step 3: Installing ~/bin utilities..."
 
 cp -R "$BOOTSTRAP_DIR"/bin/* "${HOME}/bin/"
 
@@ -266,10 +245,10 @@ bootstrap_echo "Done!"
 
 
 ################################################################################
-# 5. Set up Tmuxinator (https://github.com/tmuxinator/tmuxinator)
+# 4. Set up Tmuxinator (https://github.com/tmuxinator/tmuxinator)
 ################################################################################
 
-bootstrap_echo "Step 5: Setting up Tmuxinator..."
+bootstrap_echo "Step 4: Setting up Tmuxinator..."
 
 if [ ! -d "${HOME}/.tmuxinator/" ]; then
   mkdir "${HOME}/.tmuxinator"
@@ -286,22 +265,7 @@ bootstrap_echo "Done!"
 
 
 ################################################################################
-# 6. Install Ukrainian language utilities
-#
-# Reference:
-# * http://apple.stackexchange.com/a/11842/75491
-# * http://extensions.services.openoffice.org/en/project/ukrainian-dictionary
-################################################################################
-
-bootstrap_echo "Step 6: Installing Ukrainian language utilities..."
-
-cp "$BOOTSTRAP_DIR"/lib/{hyph_uk.dic,uk_UA.aff,uk_UA.dic} "$DICTIONARY_DIR"
-
-bootstrap_echo "Done!"
-
-
-################################################################################
-# 7. Setup dotfiles (http://jsua.co/dotfiles)
+# 5. Setup dotfiles (http://jsua.co/dotfiles)
 ################################################################################
 
 bootstrap_echo "Step 7: Installing dotfiles..."
@@ -318,7 +282,7 @@ bootstrap_echo "Cloning dotfiles repo to ${DOTFILES_DIR} ..."
 git clone "$DOTFILES_REPO_URL" -b "$DOTFILES_BRANCH" "$DOTFILES_DIR"
 
 # shellcheck source=/dev/null
-source "${DOTFILES_DIR}/install.sh"
+source "${DOTFILES_DIR}/install profile ${DOTFILES_PROFILE}"
 
 bootstrap_echo "Done!"
 
@@ -330,7 +294,7 @@ echo "**********************************************************************"
 echo "****                                                              ****"
 echo "**** Mac Bootstrap script complete! Please restart your computer. ****"
 echo "****                                                              ****"
-echo "****                    https://jsua.co/macos                     ****"
+echo "****                    https://jbc.dev/macos                     ****"
 echo "****                                                              ****"
 echo "**********************************************************************"
 echo "**********************************************************************"
